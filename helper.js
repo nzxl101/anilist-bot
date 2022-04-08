@@ -141,6 +141,7 @@ module.exports = class Helper {
         if(_obj.length >= 1) {
             threads = _obj.length > config.Settings.MaxItems ? Math.ceil(config.Settings.MaxItems/5) : 1;
             for(var i = 0; i < threads; i++) {
+                await new Promise(r => setTimeout(r, i*5000));
                 let id = (Math.random()+1).toString(36).substring(5), activityList = _obj.splice(0, config.Settings.MaxItems);
                 if(activityList.length >= 1) {
                     console.log(`Spawning new worker thread [${id}]`);
