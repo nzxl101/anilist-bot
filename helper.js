@@ -295,7 +295,7 @@ module.exports = class Helper {
                                 }
                                 break;
                             case "addEntry":
-                                let text = await this.askForInput(x);
+                                let text = await this.askForInput(true);
                                 if(text && text.length >= 2 && text.match(/^[a-zA-Z0-9]+$/)) {
                                     let list = [];
                                     list = list.concat(await this.search(text, 0), await this.search(text, 2), await this.search(text, 1));
