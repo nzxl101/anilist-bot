@@ -139,7 +139,7 @@ module.exports = class Helper {
 
     async spawn(threads = 5) {
         if(_obj.length >= 1) {
-            threads = _obj.length > config.Settings.MaxItems ? config.Settings.MaxItems/5 : 1;
+            threads = _obj.length > config.Settings.MaxItems ? Math.ceil(config.Settings.MaxItems/5) : 1;
             for(var i = 0; i < threads; i++) {
                 let id = (Math.random()+1).toString(36).substring(5), activityList = _obj.splice(0, config.Settings.MaxItems);
                 if(activityList.length >= 1) {
@@ -149,7 +149,7 @@ module.exports = class Helper {
                         if(r.done) {
                             done.push(r.entryId);
                         } else {
-                            _obj.push({ username: r.obj.user.name, avatar: r.obj.user.avatar.large, userId: r.obj.user.id, id: r.obj.id, liked: r.obj.isLiked, following: r.obj.user.isFollowing, media: { title: r.obj.media.title.userPreferred, image: r.obj.media.coverImage.large } });
+                            _obj.push({ username: r.obj.username, avatar: r.obj.avatar, userId: r.obj.userId, id: r.obj.id, liked: r.obj.liked, following: r.obj.following, media: { title: r.obj.media.title, image: r.obj.media.image } });
                         }
                     });
                     worker[id].on("exit", (d) => { 
