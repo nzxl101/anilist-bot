@@ -164,11 +164,15 @@ module.exports = class Helper {
         }
     }
 
-    askForInput(x) {
+    askForInput(x = false, resolved = false) {
         return new Promise(resolve => {
             bot.editMessageReplyMarkup({ inline_keyboard: [[{ text: "Please enter a value (8s 🏃‍♂️)", callback_data: JSON.stringify({ action: "none" })}]] }, { chat_id: config.Credentials.Telegram.userID, message_id: messageID }).then(() => {
-                setTimeout(() => x ? bot.emit("callback_query", JSON.stringify({ data: { action: "return", value: "settings" }})) : resolve(), 8*1000);
+                setTimeout(() => {
+                    if(!x && !resolved) return resolve();
+                    if(x && !resolved) return bot.emit("callback_query", JSON.stringify({ data: { action: "return", value: "settings" }}));
+                }, 8*1000);
                 messageCallback[config.Credentials.Telegram.userID] = (a) => {
+                    resolved = true;
                     resolve(a.text);
                 }
             });
@@ -311,7 +315,7 @@ module.exports = class Helper {
                                 break;
                         }
                         
-                        if(toChange != "addEntry" || toChange != "removeEntry") {
+                        if(toChange != "addEntry" && toChange != "removeEntry") {
                             saveConfig();
                         }
                         
