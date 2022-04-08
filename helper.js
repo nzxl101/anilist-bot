@@ -164,10 +164,10 @@ module.exports = class Helper {
         }
     }
 
-    askForInput() {
+    askForInput(x) {
         return new Promise(resolve => {
             bot.editMessageReplyMarkup({ inline_keyboard: [[{ text: "Please enter a value (8s 🏃‍♂️)", callback_data: JSON.stringify({ action: "none" })}]] }, { chat_id: config.Credentials.Telegram.userID, message_id: messageID }).then(() => {
-                setTimeout(() => resolve(), 8*1000);
+                setTimeout(() => x ? bot.emit("callback_query", JSON.stringify({ data: { action: "return", value: "settings" }})) : resolve(), 8*1000);
                 messageCallback[config.Credentials.Telegram.userID] = (a) => {
                     resolve(a.text);
                 }
@@ -295,7 +295,7 @@ module.exports = class Helper {
                                 }
                                 break;
                             case "addEntry":
-                                let text = await this.askForInput();
+                                let text = await this.askForInput(x);
                                 if(text && text.length >= 2 && text.match(/^[a-zA-Z0-9]+$/)) {
                                     let list = [];
                                     list = list.concat(await this.search(text, 0), await this.search(text, 2), await this.search(text, 1));
@@ -311,7 +311,7 @@ module.exports = class Helper {
                                 break;
                         }
                         
-                        if(toChange != "removeEntry") {
+                        if(toChange != "addEntry" || toChange != "removeEntry") {
                             saveConfig();
                         }
                         
