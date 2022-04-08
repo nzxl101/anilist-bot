@@ -132,19 +132,19 @@ module.exports = class Helper {
         fs.writeFileSync("./config.json", JSON.stringify(config, null, 4));
 
         this.getActivities(config.List).then(() => {
-            this.spawn();
+            this.spawn(5);
             running = setTimeout(() => this.start(), config.Settings.Cooldown*60*1000);
         });
     }
 
-    async spawn(threads = 5) {
+    async spawn(chunks = 5, added = 0) {
         if(_obj.length >= 1) {
-            threads = _obj.length > config.Settings.MaxItems ? Math.ceil(config.Settings.MaxItems/5) : 1;
-            for(var i = 0; i < threads; i++) {
-                await new Promise(r => setTimeout(r, i*5000));
-                let id = (Math.random()+1).toString(36).substring(5), activityList = _obj.splice(0, config.Settings.MaxItems);
+            for(var i = chunks; i > 0; i--) {
+                await new Promise(r => setTimeout(r, i*1000));
+                let id = (Math.random()+1).toString(36).substring(5), activityList = _obj.splice(0, Math.ceil((config.Settings.MaxItems-added) / i));
+                added += activityList.length;
                 if(activityList.length >= 1) {
-                    console.log(`Spawning new worker thread [${id}]`);
+                    console.log(`Spawning new worker thread [${id}] for ${activityList.length} activities`);
                     worker[id] = new Worker("./worker.js", { workerData: { id: id, entries: activityList, settings: config.Settings, telegram: config.Credentials.Telegram, headers: headers } });
                     worker[id].on("message", (r) => {
                         if(r.done) {
