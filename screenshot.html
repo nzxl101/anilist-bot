@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;500&display=swap');
+
+            body {
+                display: block;
+                margin: 0;
+                font-family: 'Montserrat', sans-serif;
+                background-color: black;
+            }
+
+            .background {
+                position: absolute;
+                width: 800px;
+                height: 375px;
+                background: rgb(56,60,59);
+                background: linear-gradient(191deg, rgba(56,60,59,1) 0%, rgba(87,83,79,1) 100%);
+                z-index: 0;
+            }
+
+            img {
+                position: absolute;
+                margin-left: 15px;
+                margin-top: 15px;
+            }
+
+            .avatar {
+                position: relative;
+                height: 120px;
+                width: 120px;
+            }
+
+            .container {
+                position: absolute;
+                left: 260px;
+                top: 15px;
+                width: 520px;
+                height: 345px;
+                text-align: center;
+                justify-content: center;
+            }
+            
+            h1 {
+                color: white;
+            }
+
+            .fa-heart {
+                color: rgb(218, 70, 70);
+            }
+
+            .fa-plus {
+                color: rgb(99, 230, 99);
+            }
+
+            span {
+                color: #df3125;
+            }
+
+            p {
+                color: white;
+                font-weight: 300;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="background">
+            <img id="cover" src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/bx132405-Iy6Lze5SOme8.jpg">
+        </div>
+        <div class="container">
+            <img id="avatar" class="avatar" src="https://s4.anilist.co/file/anilistcdn/user/avatar/large/b5277773-BLAM909Zdphp.jpg">
+            <h1><i class="fa-solid fa-heart"></i> Liked activity from <span id="username">mindless</span></h1>
+            <h1 id="follow" style="display: none;"><i class="fa-solid fa-plus"></i> Followed user <span id="username">mindless</span></h1>
+            <p>Anime: <a id="anime">My Dress-Up Darling</a><br>User ID: <a id="userid">178237812</a><br>Activity ID: <a id="aid">178237812</a></p>
+        </div>
+
+        <script>
+            const params = new URLSearchParams(window.location.search);
+
+            if(params.has("follow")) {
+                document.getElementById("follow").style = "display: block;"
+            }
+
+            document.getElementById("cover").src = params.get("cover");
+            document.getElementById("avatar").src = params.get("avatar");
+            document.getElementById("anime").innerText = params.get("anime");
+            document.getElementById("username").innerText = params.get("username");
+            document.getElementById("userid").innerText = params.get("uid");
+            document.getElementById("aid").innerText = params.get("aid");
+        </script>
+    </body>
+</html>
