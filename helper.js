@@ -139,8 +139,12 @@ module.exports = class Helper {
 
     async spawn(chunks = 5, added = 0) {
         if(_obj.length >= 1) {
+            let promises = [];
             for(var i = chunks; i > 0; i--) {
-                await new Promise(r => setTimeout(r, i*1000));
+                promises.push(i);
+            }
+
+            var task = (i) => new Promise((resolve) => {
                 let id = (Math.random()+1).toString(36).substring(5), activityList = _obj.splice(0, Math.ceil((config.Settings.MaxItems-added) / i));
                 added += activityList.length;
                 if(activityList.length >= 1) {
@@ -157,10 +161,18 @@ module.exports = class Helper {
                         if(d == 0) {
                             console.log(`Worker [${id}] fulfilled tasks successfully`);
                             worker[id].terminate();
+                            delete worker[id];
+                            resolve();
                         }
                     });
                 }
+            });
+
+            var sequence = (promise, i) => {
+                return new Promise((resolve) => { resolve(promise.then(_ => task(i))); });
             }
+
+            promises.reduce(sequence, Promise.resolve());
         }
     }
 
