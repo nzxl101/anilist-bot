@@ -280,21 +280,21 @@ module.exports = class Helper {
                             case "changePages":
                                 let pages = await this.askForInput();
                                 if(pages && Number(pages)) {
-                                    if(pages < 1 || pages >= 11) return;
+                                    if(pages < 1 || pages >= 11) break;
                                     config.Settings["Pages"] = Number(pages);
                                 }
                                 break;
                             case "changeMaxItems":
                                 let maxItems = await this.askForInput();
                                 if(maxItems && Number(maxItems)) {
-                                    if(maxItems < 1 || maxItems >= 51) return;
+                                    if(maxItems < 1 || maxItems >= 51) break;
                                     config.Settings["MaxItems"] = Number(maxItems);
                                 }
                                 break;
                             case "changeCD":
                                 let cooldown = await this.askForInput();
                                 if(cooldown && Number(cooldown)) {
-                                    if(cooldown < 3 || cooldown >= 21) return;
+                                    if(cooldown < 3 || cooldown >= 21) break;
                                     config.Settings["Cooldown"] = Number(cooldown);
                                 }
                                 break;
