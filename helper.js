@@ -80,7 +80,7 @@ module.exports = class Helper {
                     url: "https://graphql.anilist.co", 
                     data: { 
                         "query": `query($id: Int, $page: Int) { 
-                                    Page(page: $page, perPage: ${config.Settings.MaxItems}) {
+                                    Page(page: $page, perPage: ${Math.floor(config.Settings.MaxItems/2)}) {
                                         pageInfo {
                                             currentPage perPage
                                         } 
@@ -119,12 +119,13 @@ module.exports = class Helper {
                 });
             }
 
-            _obj = _obj.filter(x => config.Settings.FollowUser ? x.following == false && x.liked == false : x.liked == false);
+            _obj = _obj.filter(x => config.Settings.FollowUser ? x.following == false && x.liked == false : config.Settings.FollowUser ? x.following == true && x.liked == false : x.liked == false);
             resolve();
         });
     }
 
     start() {
+        console.log("Checking for activities..");
         for(const entry in config.List) {
             delete config.List[entry].cursor;
         }
@@ -204,6 +205,7 @@ module.exports = class Helper {
             bot.on("message", (message) => {
                 let callback = messageCallback[message.chat.id];
                 if (callback) {
+                    console.log(`Received new message from ${config.Credentials.Telegram.userID}`);
                     delete messageCallback[message.chat.id];
                     return callback(message);
                 }
@@ -211,6 +213,7 @@ module.exports = class Helper {
 
             bot.onText(/\/hey/, (msg) => {
                 if(msg.chat.id == config.Credentials.Telegram.userID) {
+                    console.log(`Received new message from ${config.Credentials.Telegram.userID}`);
                     bot.deleteMessage(msg.from.id, messageID).catch(r => r).then(() => {
                         bot.sendMessage(msg.from.id, "Loading").then(r => {
                             messageID = r.message_id;
@@ -264,6 +267,7 @@ module.exports = class Helper {
                         let entryToDelete = callbackQuery.data.value;
                         config.List.splice(config.List.findIndex(x => x.id == entryToDelete), 1);
                         saveConfig();
+                        console.log(`Deleted entry ${entryToDelete}`);
                         return;
                     }
 
@@ -273,6 +277,7 @@ module.exports = class Helper {
                             if(config.List.filter(entry => entry.id === toAddToConfig.id).length > 0) return bot.emit("callback_query", JSON.stringify({ data: { action: "return", value: "settings" }}));
                             config.List.push({ "id": x.id, "type": x.type, "name": x.name ? x.name : x.title.userPreferred });
                             saveConfig();
+                            console.log(`Added entry ${x.id}`);
                         });
                         return;
                     }
@@ -282,18 +287,22 @@ module.exports = class Helper {
                         switch (toChange) {
                             case "toggleFollow":
                                 config.Settings.FollowUser = !config.Settings.FollowUser;
+                                console.log(`FollowUser: ${config.Settings.FollowUser ? "true" : "false"}`);
                                 break;
                             case "toggleOldest":
                                 config.Settings.OldestFirst = !config.Settings.OldestFirst;
+                                console.log(`OldestFirst: ${config.Settings.OldestFirst ? "true" : "false"}`);
                                 break;
                             case "toggleNotis":
                                 config.Settings.Notifications = !config.Settings.Notifications;
+                                console.log(`Notifications: ${config.Settings.Notifications ? "true" : "false"}`);
                                 break;
                             case "changePages":
                                 let pages = await this.askForInput();
                                 if(pages && Number(pages)) {
                                     if(pages < 1 || pages >= 11) break;
                                     config.Settings["Pages"] = Number(pages);
+                                    console.log(`Pages: ${config.Settings["Pages"]}`);
                                 }
                                 break;
                             case "changeMaxItems":
@@ -301,6 +310,7 @@ module.exports = class Helper {
                                 if(maxItems && Number(maxItems)) {
                                     if(maxItems < 1 || maxItems >= 51) break;
                                     config.Settings["MaxItems"] = Number(maxItems);
+                                    console.log(`MaxItems: ${config.Settings["MaxItems"]}`);
                                 }
                                 break;
                             case "changeCD":
@@ -308,11 +318,12 @@ module.exports = class Helper {
                                 if(cooldown && Number(cooldown)) {
                                     if(cooldown < 3 || cooldown >= 21) break;
                                     config.Settings["Cooldown"] = Number(cooldown);
+                                    console.log(`Cooldown: ${config.Settings["Cooldown"]}`);
                                 }
                                 break;
                             case "addEntry":
                                 let text = await this.askForInput(true);
-                                if(text && text.length >= 2 && text.match(/^[a-zA-Z0-9]+$/)) {
+                                if(text && text.match(/^[a-zA-Z0-9_ ]{2,50}+$/)) {
                                     let list = [];
                                     list = list.concat(await this.search(text, 0), await this.search(text, 2), await this.search(text, 1));
                                     list.push([{ text: "« Go back", callback_data: JSON.stringify({ action: "return", value: "settings" })}]);
@@ -329,6 +340,7 @@ module.exports = class Helper {
                         
                         if(toChange != "addEntry" && toChange != "removeEntry") {
                             saveConfig();
+                            console.log("Config saved");
                         }
                         
                         return;
@@ -337,6 +349,7 @@ module.exports = class Helper {
                     switch (action) {
                         case "toggle":
                             if(running) {
+                                console.log("Stopping bot..");
                                 for (const [workerId, process] of Object.entries(worker)) {
                                     process.terminate();
                                     console.log(`Worker [${workerId}] terminated`);
@@ -346,11 +359,13 @@ module.exports = class Helper {
                                 running = null, worker = {}, _obj = [];
                                 setTimeout(() => bot.emit("callback_query", JSON.stringify({ data: { action: "return", value: "main" }})), 1500);
                             } else {
+                                console.log("Starting bot..");
                                 this.start();
                                 setTimeout(() => bot.emit("callback_query", JSON.stringify({ data: { action: "return", value: "main" }})), 1500);
                             }
                             break;
                         case "kill":
+                            console.log("Killing bot..");
                             bot.editMessageText("Bot has been killed.", { chat_id: config.Credentials.Telegram.userID, message_id: messageID }).then(() => process.exit());
                             break;
                         case "settings":
