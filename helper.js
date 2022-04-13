@@ -14,28 +14,6 @@ let worker = {}, rateLimited = false, _obj = [], running = null, messageID = "";
 let done = [], failed = [];
 
 module.exports = class Helper {
-    get(code) {
-        return new Promise(async resolve => {
-            axios({ 
-                method: "POST", 
-                url: "https://graphql.anilist.co",
-                data: {
-                    "grant_type": "authorization_code",
-                    "client_id": config.Credentials.AniList.clientID,
-                    "client_secret": config.Credentials.AniList.clientSecret,
-                    "redirect_uri": config.Credentials.AniList.redirectURI,
-                    "code":  code
-                },
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                }
-            }).then(response => {
-                resolve(response.data.access_token);
-            });
-        });
-    }
-
     search(text, type, bool = false, _tmp = []) {
         return new Promise(async resolve => {
             axios({ 

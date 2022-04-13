@@ -1,47 +1,25 @@
-# anilist.co activity bot
-with this bot you can automatically like activities and follow users
-why? because why not lmao.
+# AniList.co Mass-Like/Follow User Bot
+Disclaimer: Don't use this bot, if you want to keep the ability to like/follow/comment posts.
+This will get you 99.8% banned if you don't adjust the default settings.
 
-# how to use
-1. `git clone https://github.com/nzxl101/anilist-bot`
-2. `cd anilist-bot && npm i`
-3. create config.json and fill in your stuff
-```
-{
-    "Credentials": {
-        "clientID": "",
-        "clientSecret": "",
-        "redirectURI": "https://anilist.co/api/v2/oauth/pin",
-        "accessToken": ""
-    },
-    "List": [
-        {
-            "id": 665195,
-            "type": 1,
-            "name": "Schwimmii"
-        },
-        {
-            "id": 132405,
-            "type": 0,
-            "name": "My Dress-Up Darling"
-        }
-    ],
-    "Options": {
-        "FollowUser": false,
-        "LikeActivity": true
-    }
-}
-```
-4. `node index.js`
+I'm only releasing this because I had enough fun coding and researching how to abuse GraphQL.
+If a moderator or admin of AniList sees this, please don't ban me entirely from the site.
+![Warning](https://i.imgur.com/zeaYyHs.png)
 
-# how to add entries to list
+# How To Use
+First of all you need to create credentials on [this](https://anilist.co/settings/developer) site.
+After that you need to create a [Telegram bot](https://sendpulse.com/knowledge-base/chatbot/create-telegram-chatbot) account. Yes, this is needed to configure the bot and use it properly.
+You should also get your [Telegram user id](https://www.youtube.com/watch?v=W8ifn3ATpdA) so that the bot can message you and only you.
+```bash
+git clone https://github.com/nzxl101/anilist-bot
+cd anilist-bot && npm i
+node index.js
 ```
-    {
-        "id": 132405, # id of the title
-        "type": 0, # 0 = anime/manga, 1 = user
-        "name": "My Dress-Up Darling" # this is only used for log
-    }
-```
+Follow the first time setup and restart the app.
+You can access the bot by sending a "/hey" command on Telegram.
 
-# how to get credentials
-https://anilist.gitbook.io/anilist-apiv2-docs/overview/oauth/authorization-code-grant
+# Recommended Settings
+Like oldest first: On
+Max Pages: 10
+Max Items: 10
+Cooldown: 20
