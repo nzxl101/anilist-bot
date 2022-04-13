@@ -58,7 +58,7 @@ module.exports = class Helper {
                     url: "https://graphql.anilist.co", 
                     data: { 
                         "query": `query($id: Int, $page: Int) { 
-                                    Page(page: $page, perPage: ${Math.floor(config.Settings.MaxItems/2)}) {
+                                    Page(page: $page, perPage: ${Math.floor(config.Settings.MaxItems/ids.length)}) {
                                         pageInfo {
                                             currentPage perPage
                                         } 
