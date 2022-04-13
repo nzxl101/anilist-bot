@@ -301,7 +301,7 @@ module.exports = class Helper {
                                 break;
                             case "addEntry":
                                 let text = await this.askForInput(true);
-                                if(text && text.match(/^[a-zA-Z0-9_ ]{2,50}+$/)) {
+                                if(text && text.match(/^[a-zA-Z0-9_ ]{2,50}/)) {
                                     let list = [];
                                     list = list.concat(await this.search(text, 0), await this.search(text, 2), await this.search(text, 1));
                                     list.push([{ text: "« Go back", callback_data: JSON.stringify({ action: "return", value: "settings" })}]);
