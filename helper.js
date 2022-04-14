@@ -104,9 +104,6 @@ module.exports = class Helper {
 
     start() {
         console.log("Checking for activities..");
-        for(const entry in config.List) {
-            delete config.List[entry].cursor;
-        }
 
         fs.writeFileSync("./config.json", JSON.stringify(config, null, 4));
 
@@ -328,6 +325,10 @@ module.exports = class Helper {
                         case "toggle":
                             if(running) {
                                 console.log("Stopping bot..");
+                                for(const entry in config.List) {
+                                    delete config.List[entry].cursor;
+                                }
+
                                 for (const [workerId, process] of Object.entries(worker)) {
                                     process.terminate();
                                     console.log(`Worker [${workerId}] terminated`);
@@ -344,6 +345,10 @@ module.exports = class Helper {
                             break;
                         case "kill":
                             console.log("Killing bot..");
+                            for(const entry in config.List) {
+                                delete config.List[entry].cursor;
+                            }
+                            
                             bot.editMessageText("Bot has been killed.", { chat_id: config.Credentials.Telegram.userID, message_id: messageID }).then(() => process.exit());
                             break;
                         case "settings":
