@@ -39,8 +39,8 @@ let config = {};
             List: []
         };
 
-        rl.question("First of all we need the AniList credentials. (FORMAT>> id:secret)\n>", async (creds) => {
-            creds = creds.split(":");
+        rl.question("First of all we need the AniList credentials. (FORMAT>> id.secret)\n>", async (creds) => {
+            creds = creds.split(".");
             if(!creds[0] || !creds[1]) return;
 
             config.Credentials.AniList.clientID = creds[0];
@@ -51,6 +51,9 @@ let config = {};
             http.createServer((req, res) => {
                 let queryObject = url.parse(req.url, true).query;
                 if(queryObject.code) {
+                    res.writeHead(200);
+                    res.end("<script>window.close();</script>");
+                    
                     let code = queryObject.code;
                     axios({
                         method: "POST", 
@@ -83,8 +86,6 @@ let config = {};
                         });
                     });
                 }
-                res.writeHead(200);
-                res.end("<script>window.close();</script>");
             }).listen(8081);
         });
     } else {
