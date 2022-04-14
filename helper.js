@@ -186,7 +186,7 @@ module.exports = class Helper {
                 }
             });
 
-            bot.onText(/\/hey/, (msg) => {
+            bot.onText(/\/start/, (msg) => {
                 if(msg.chat.id == config.Credentials.Telegram.userID) {
                     console.log(`Received new message from ${config.Credentials.Telegram.userID}`);
                     bot.deleteMessage(msg.from.id, messageID).catch(r => r).then(() => {
@@ -348,7 +348,7 @@ module.exports = class Helper {
                             for(const entry in config.List) {
                                 delete config.List[entry].cursor;
                             }
-                            
+
                             bot.editMessageText("Bot has been killed.", { chat_id: config.Credentials.Telegram.userID, message_id: messageID }).then(() => process.exit());
                             break;
                         case "settings":
